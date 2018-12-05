@@ -37,14 +37,16 @@ Piece TicTacToeBoard::toggleTurn()
 **/ 
 Piece TicTacToeBoard::placePiece(int row, int column)
 {
-  if( board[row][column] != Blank )
-    return board[row][column];
+  if ( getWinner() != Invalid )
+    return getWinner();
   if ( row > 2 || row < 0 || column > 2 || column < 0 )
     return Invalid;
-  Piece cur = turn;
+  if( board[row][column] != Blank )
+    return board[row][column];
+  board[row][column] = turn;
   toggleTurn();
   
-  return cur;
+  return board[row][column];
 }
 
 /**
@@ -53,7 +55,12 @@ Piece TicTacToeBoard::placePiece(int row, int column)
 **/
 Piece TicTacToeBoard::getPiece(int row, int column)
 {
-  return Invalid;
+  if ( row > 2 || row < 0 || column > 2 || column < 0 )
+    return Invalid;
+  if ( board[row][column] == Blank )
+    return Blank;
+  
+  return board[row][column];
 }
 
 /**
@@ -62,5 +69,53 @@ Piece TicTacToeBoard::getPiece(int row, int column)
 **/
 Piece TicTacToeBoard::getWinner()
 {
-  return Invalid;
+  Piece curPiece;
+  curPiece = board[0][0];
+  if ( curPiece == X || curPiece == O )
+  {
+    if ( board[0][1] == curPiece && board[0][2] == curPiece )
+      return curPiece;
+    if ( board[1][0] == curPiece && board[2][0] == curPiece )
+      return curPiece;
+    if ( board[1][1] == curPiece && board[2][2] == curPiece )
+      return curPiece;
+  }
+  curPiece = board[1][0];
+  if ( curPiece == X || curPiece == O )
+  {
+    if ( board[1][1] == curPiece && board[1][2] == curPiece )
+      return curPiece;
+  }
+  curPiece = board[2][0];
+  if ( curPiece == X || curPiece == O )
+  {
+    if ( board[2][1] == curPiece && board[2][2] == curPiece )
+      return curPiece;
+    if ( board[1][1] == curPiece && board[0][2] == curPiece )
+      return curPiece;
+  }
+  curPiece = board[0][1];
+  if ( curPiece == X || curPiece == O )
+  {
+    if ( board[1][1] == curPiece && board[2][1] == curPiece )
+      return curPiece;
+  }
+  curPiece = board[0][2];
+  if ( curPiece == X || curPiece == O )
+  {
+    if ( board[1][2] == curPiece && board[2][2] == curPiece )
+      return curPiece;
+  }
+  
+  // If the game is not over
+  for ( int i = 0; i < 3; i++ )
+  {
+    for (int j = 0; j < 3; j++ )
+    {
+      if ( board[i][j] == Blank )
+        return Invalid;
+    }
+  }
+  
+  return Blank;
 }
